@@ -13,14 +13,6 @@ public class AppConstants {
     // sp
     public static final String SP_NAME = "sp_name_fitpolo";
 
-    public static final String SP_KEY_USER_NAME = "sp_key_name";
-    public static final String SP_KEY_USER_GENDER = "sp_key_gender";
-    public static final String SP_KEY_USER_AGE = "sp_key_age";
-    public static final String SP_KEY_USER_BIRTHDAT = "sp_key_birthday";
-    public static final String SP_KEY_USER_HEIGHT = "sp_key_height";
-    public static final String SP_KEY_USER_WEIGHT = "sp_key_weight";
-    public static final String SP_KEY_IS_BRITISH_UNIT = "sp_key_is_british_unit";
-
     public static final String EXTRA_CONN_COUNT = "extra_conn_count";
 
     public static final int PERMISSION_REQUEST_CODE = 1;
