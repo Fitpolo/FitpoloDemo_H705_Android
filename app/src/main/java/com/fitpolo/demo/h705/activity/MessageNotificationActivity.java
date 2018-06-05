@@ -112,16 +112,7 @@ public class MessageNotificationActivity extends BaseActivity {
                     }
                 }
                 if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
-                    abortBroadcast();
-                    Toast.makeText(MessageNotificationActivity.this, "Connect failed", Toast.LENGTH_SHORT).show();
                     MessageNotificationActivity.this.finish();
-                }
-                if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
-                    abortBroadcast();
-                }
-                if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
-                    abortBroadcast();
-                    Toast.makeText(MessageNotificationActivity.this, "Success", Toast.LENGTH_SHORT).show();
                 }
             }
         }

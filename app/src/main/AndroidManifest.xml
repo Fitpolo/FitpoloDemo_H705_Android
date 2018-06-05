@@ -39,6 +39,7 @@
             </intent-filter>
         </service>
         <service android:name=".service.FitpoloNotificationCollectorMonitorService" />
+        <service android:name=".service.DfuService" />
     </application>
 
 </manifest>

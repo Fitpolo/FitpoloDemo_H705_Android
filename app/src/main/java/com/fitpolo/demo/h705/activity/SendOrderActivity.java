@@ -207,8 +207,10 @@ public class SendOrderActivity extends BaseActivity {
                             break;
                         case Z_READ_DIAL:
                             LogModule.i("Dial:" + MokoSupport.getInstance().getDial());
+                            break;
                         case Z_READ_NODISTURB:
                             LogModule.i(MokoSupport.getInstance().getNodisturb().toString());
+                            break;
                         case Z_READ_PARAMS:
                             LogModule.i("Product batch：" + MokoSupport.getInstance().getProductBatch());
                             LogModule.i("Params：" + MokoSupport.getInstance().getParams().toString());
@@ -466,7 +468,7 @@ public class SendOrderActivity extends BaseActivity {
 
     private void back() {
         if (MokoSupport.getInstance().isConnDevice(this, mDevice.address)) {
-            MokoSupport.getInstance().disConnectBle();
+            mService.disConnectBle();
         }
         finish();
     }
