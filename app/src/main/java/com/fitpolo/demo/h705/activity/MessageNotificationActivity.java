@@ -11,7 +11,6 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
-import android.widget.Toast;
 
 import com.fitpolo.demo.h705.R;
 import com.fitpolo.demo.h705.service.MokoService;
