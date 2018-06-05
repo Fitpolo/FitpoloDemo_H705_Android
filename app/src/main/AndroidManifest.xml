@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.fitpolo.demo">
+    package="com.fitpolo.demo.h705">
 
     <application
         android:name=".BaseApplication"
@@ -28,17 +28,17 @@
             android:name=".activity.MessageNotificationActivity"
             android:screenOrientation="portrait" />
 
-        <service android:name="com.fitpolo.demo.service.MokoService" />
+        <service android:name=".service.MokoService" />
 
         <service
-            android:name="com.fitpolo.demo.service.FitpoloNotificationCollectorService"
+            android:name=".service.FitpoloNotificationCollectorService"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
-        <service android:name="com.fitpolo.demo.service.FitpoloNotificationCollectorMonitorService" />
+        <service android:name=".service.FitpoloNotificationCollectorMonitorService" />
     </application>
 
 </manifest>

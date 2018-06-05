@@ -13,4 +13,16 @@ public class FirmwareParams {
     public int batchYear;// 生产批次年;
     public int batchWeek;// 生产批次周;
     public int speedUnit;// 蓝牙连接配速单位是1.25ms;
+
+    @Override
+    public String toString() {
+        return "FirmwareParams{" +
+                "test='" + test + '\'' +
+                ", reflectiveThreshold=" + reflectiveThreshold +
+                ", reflectiveValue=" + reflectiveValue +
+                ", batchYear=" + batchYear +
+                ", batchWeek=" + batchWeek +
+                ", speedUnit=" + speedUnit +
+                '}';
+    }
 }

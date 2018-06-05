@@ -16,14 +16,27 @@
             <TableRow>
 
                 <Button
-                    android:id="@+id/btn_notify_wechat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="notifyPhoneCall"
+                    android:text="notifyPhoneCall" />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="notifySms"
+                    android:text="notifySms" />
+            </TableRow>
+
+            <TableRow>
+
+                <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:onClick="notifyWechat"
                     android:text="notifyWechat" />
 
                 <Button
-                    android:id="@+id/btn_notify_QQ"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:onClick="notifyQQ"
@@ -33,14 +46,12 @@
             <TableRow>
 
                 <Button
-                    android:id="@+id/btn_notify_whatsapp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:onClick="notifyWhatsapp"
                     android:text="notifyWhatsapp" />
 
                 <Button
-                    android:id="@+id/btn_notify_facebook"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:onClick="notifyFacebook"
@@ -50,7 +61,6 @@
             <TableRow>
 
                 <Button
-                    android:id="@+id/btn_notify_twitter"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:onClick="notifyTwitter"
@@ -74,7 +84,6 @@
                     android:text="notifySnapchat" />
 
                 <Button
-                    android:id="@+id/btn_notify_line"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:onClick="notifyLine"

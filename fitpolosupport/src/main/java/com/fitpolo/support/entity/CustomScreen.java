@@ -16,4 +16,16 @@ public class CustomScreen {
         this.step = step;
         this.sleep = sleep;
     }
+
+    @Override
+    public String toString() {
+        return "CustomScreen{" +
+                "duration=" + duration +
+                ", calorie=" + calorie +
+                ", distance=" + distance +
+                ", heartrate=" + heartrate +
+                ", step=" + step +
+                ", sleep=" + sleep +
+                '}';
+    }
 }

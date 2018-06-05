@@ -7,9 +7,9 @@ package com.fitpolo.support.entity;
  * @ClassPath com.fitpolo.support.entity.DeviceTypeEnum
  */
 public enum DeviceTypeEnum {
-    H701("02"),
     H703("03"),
-    H705("05"),;
+    H705("05"),
+    ;
 
     private String lastCode;
 
@@ -31,7 +31,7 @@ public enum DeviceTypeEnum {
                 return deviceTypeEnum;
             }
         }
-        return H701;
+        return H703;
     }
 
     public static DeviceTypeEnum fromLastCode(String lastCode) {
@@ -40,6 +40,6 @@ public enum DeviceTypeEnum {
                 return deviceTypeEnum;
             }
         }
-        return H701;
+        return H703;
     }
 }

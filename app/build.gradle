@@ -4,11 +4,11 @@ android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
     defaultConfig {
-        applicationId "com.fitpolo.demo"
+        applicationId "com.fitpolo.demo.h705"
         minSdkVersion 18
         targetSdkVersion 23
         versionCode 1
-        versionName "3.0"
+        versionName "1.0"
     }
 
     sourceSets {
@@ -26,9 +26,9 @@ android {
             def outputFile = output.outputFile
             if (outputFile != null && outputFile.name.endsWith('.apk')) {
                 //这里修改apk文件名
-                def fileName = "fitpoloDemo-${defaultConfig.versionName}.apk"
+                def fileName = "fitpoloDemoH705-${defaultConfig.versionName}.apk"
                 if (outputFile.name.contains('debug')) {
-                    fileName = "fitpoloDemo-${defaultConfig.versionName}-debug.apk"
+                    fileName = "fitpoloDemoH705-${defaultConfig.versionName}-debug.apk"
                 }
                 output.outputFile = new File(outputFile.parent, fileName)
             }

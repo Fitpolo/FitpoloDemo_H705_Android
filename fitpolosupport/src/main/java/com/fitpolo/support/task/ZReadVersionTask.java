@@ -49,9 +49,6 @@ public class ZReadVersionTask extends OrderTask {
         System.arraycopy(value, 5, middleCode, 0, 2);
         byte[] lastCode = new byte[2];
         System.arraycopy(value, 7, lastCode, 0, 2);
-        MokoSupport.showHeartRate = true;
-        MokoSupport.supportNewData = true;
-        MokoSupport.supportNotifyAndRead = true;
 
         String versionStr = DigitalConver.bytesToHexString(preCode) + "." + DigitalConver.bytesToHexString(middleCode) + "." + DigitalConver.bytesToHexString(lastCode);
         // 内部版本，判断升级用

@@ -21,8 +21,8 @@ import java.io.File;
  * @ClassPath com.fitpolo.support.log.LogModule
  */
 public class LogModule {
-    private static final String TAG = "fitpolo";
-    private static final String LOG_FOLDER = "fitpolo";
+    private static final String TAG = "fitpoloDemoH705";
+    private static final String LOG_FOLDER = "fitpoloDemoH705";
     private static String PATH_LOGCAT;
 
     public static void init(Context context) {

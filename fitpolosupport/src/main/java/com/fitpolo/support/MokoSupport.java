@@ -698,20 +698,6 @@ public class MokoSupport implements MokoResponseCallback {
         });
     }
 
-    // 发送升级命令
-    public void sendUpgradeOrder(OrderTask orderTask) {
-        final MokoCharacteristic mokoCharacteristic = mCharacteristicMap.get(orderTask.orderType);
-        if (mokoCharacteristic == null) {
-            LogModule.i("executeTask : mokoCharacteristic is null");
-            return;
-        }
-        LogModule.i("app to device WRITE no response : " + orderTask.orderType.getName());
-        LogModule.i(DigitalConver.bytesToHexString(orderTask.assemble()));
-        mokoCharacteristic.characteristic.setValue(orderTask.assemble());
-        mokoCharacteristic.characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE);
-        mBluetoothGatt.writeCharacteristic(mokoCharacteristic.characteristic);
-    }
-
     /**
      * Clears the internal cache and forces a refresh of the services from the
      * remote device.
