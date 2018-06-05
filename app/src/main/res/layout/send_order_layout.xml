@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="*">
+
+            <TableRow>
+
+                <Button
+                    android:id="@+id/btn_inner_version"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="getInnerVersion"
+                    android:tag="获取内部版本"
+                    android:text="getInnerVersion" />
+
+                <Button
+                    android:id="@+id/btn_system_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="setSystemTime"
+                    android:tag="设置系统时间"
+                    android:text="setSystemTime" />
+            </TableRow>
+
+            <TableRow>
+
+                <Button
+                    android:id="@+id/btn_user_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="setUserInfo"
+                    android:tag="设置个人数据"
+                    android:text="setUserInfo" />
+
+                <Button
+                    android:id="@+id/btn_band_alarm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="setAllAlarms"
+                    android:tag="设置闹钟数据"
+                    android:text="setAllAlarms" />
+            </TableRow>
+
+            <TableRow>
+
+                <Button
+                    android:id="@+id/btn_unit_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="setUnitType"
+                    android:tag="设置单位制式"
+                    android:text="setUnitType" />
+
+                <Button
+                    android:id="@+id/btn_time_format"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="setTimeFormat"
+                    android:tag="设置显示时间格式"
+                    android:text="setTimeFormat" />
+            </TableRow>
+
+            <TableRow>
+
+                <Button
+                    android:id="@+id/btn_auto_lighten"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="setAutoLigten"
+                    android:tag="设置自动点亮屏幕"
+                    android:text="setAutoLigten" />
+
+                <Button
+                    android:id="@+id/btn_sit_alert"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="setSitAlert"
+                    android:tag="设置久坐提醒"
+                    android:text="setSitAlert" />
+            </TableRow>
+
+            <TableRow>
+
+                <Button
+                    android:id="@+id/btn_last_screen"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="setLastScreen"
+                    android:tag="设置上次显示"
+                    android:text="setLastScreen" />
+
+                <Button
+                    android:id="@+id/btn_multi_orders"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="sendMultiOrders"
+                    android:tag="发送多个命令"
+                    android:text="sendMultiOrders" />
+            </TableRow>
+
+            <TableRow>
+
+                <Button
+                    android:id="@+id/btn_heart_rate_interval"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_span="2"
+                    android:onClick="setHeartRateInterval"
+                    android:tag="设置心率监测间隔"
+                    android:text="setHeartRateInterval" />
+            </TableRow>
+
+            <TableRow>
+
+                <Button
+                    android:id="@+id/btn_function_display"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_span="2"
+                    android:onClick="setFunctionDisplay"
+                    android:tag="设置功能显示"
+
+                    android:text="setFunctionDisplay" />
+            </TableRow>
+
+            <TableRow>
+
+                <Button
+                    android:id="@+id/btn_firmware_version"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_span="2"
+                    android:onClick="getFirmwareVersion"
+                    android:tag="获取固件版本号"
+                    android:text="getFirmwareVersion" />
+            </TableRow>
+
+            <TableRow>
+
+                <Button
+                    android:id="@+id/btn_firmware_params"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_span="2"
+                    android:onClick="getFirmwareParams"
+                    android:tag="获取固件参数"
+                    android:text="getFirmwareParams" />
+            </TableRow>
+
+            <TableRow>
+
+                <Button
+                    android:id="@+id/btn_battery_step_count"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_span="2"
+                    android:onClick="getBatteryDailyStepCount"
+                    android:tag="获取电量和记步总数"
+                    android:text="getBatteryDailyStepCount" />
+            </TableRow>
+
+            <TableRow>
+
+                <Button
+                    android:id="@+id/btn_sleep_heart_rate_count"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_span="2"
+                    android:onClick="getSleepHeartCount"
+                    android:tag="获取睡眠和心率总数"
+                    android:text="getSleepHeartCount" />
+            </TableRow>
+
+            <TableRow>
+
+                <Button
+                    android:id="@+id/btn_all_steps"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="getAllSteps"
+                    android:tag="获取记步数据"
+                    android:text="getAllSteps" />
+
+                <Button
+                    android:id="@+id/btn_all_sleeps"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="getAllSleeps"
+                    android:tag="获取睡眠数据"
+                    android:text="getAllSleeps" />
+            </TableRow>
+
+            <TableRow>
+
+                <Button
+                    android:id="@+id/btn_all_heart_rate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_span="2"
+                    android:onClick="getAllHeartRate"
+                    android:tag="获取心率"
+                    android:text="getAllHeartRate" />
+
+            </TableRow>
+
+            <TableRow>
+
+                <Button
+                    android:id="@+id/btn_phone_notify"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_span="2"
+                    android:onClick="setPhoneNotify"
+                    android:tag="设置来电震动"
+                    android:text="setPhoneComingShake" />
+            </TableRow>
+
+            <TableRow>
+
+                <Button
+                    android:id="@+id/btn_sms_notify"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="setSmsNotify"
+                    android:tag="设置短信震动"
+                    android:text="setSmsComingShake" />
+
+                <Button
+                    android:id="@+id/btn_shake_band"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="shakeBand"
+                    android:tag="设置手环震动"
+                    android:text="setShakeBand" />
+            </TableRow>
+
+            <TableRow>
+
+
+                <Button
+                    android:id="@+id/btn_lastest_steps"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="getLastestSteps"
+                    android:tag="获取最新的记步数据"
+                    android:text="getLastestSteps" />
+
+                <Button
+                    android:id="@+id/btn_lastest_sleeps"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="getLastestSleeps"
+                    android:tag="获取最新的睡眠数据"
+                    android:text="getLastestSleeps" />
+            </TableRow>
+
+            <TableRow>
+
+                <Button
+                    android:id="@+id/btn_lastest_heart_rate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_span="2"
+                    android:onClick="getLastestHeartRate"
+                    android:tag="获取最新的心率数据"
+                    android:text="getLastestHeartRate" />
+            </TableRow>
+
+            <TableRow>
+
+                <Button
+                    android:id="@+id/btn_upgrade_firmware"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_span="2"
+                    android:onClick="upgradeFirmware"
+                    android:tag="升级固件"
+                    android:text="upgradeFirmware" />
+            </TableRow>
+
+            <TableRow>
+
+                <Button
+                    android:id="@+id/btn_read_all_alarms"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="readAllAlarms"
+                    android:tag="读取闹钟数据"
+                    android:text="readAllAlarms" />
+
+                <Button
+                    android:id="@+id/btn_read_sit_alert"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="readSitAlert"
+                    android:tag="读取久坐提醒"
+                    android:text="readSitAlert" />
+            </TableRow>
+
+            <TableRow>
+
+                <Button
+                    android:id="@+id/btn_read_settings"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="readSettings"
+                    android:tag="读取配置项"
+                    android:text="readSettings" />
+
+                <Button
+                    android:id="@+id/btn_notification"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="notification"
+                    android:tag="通知"
+                    android:text="notification" />
+            </TableRow>
+        </TableLayout>
+    </ScrollView>
+
+</LinearLayout>

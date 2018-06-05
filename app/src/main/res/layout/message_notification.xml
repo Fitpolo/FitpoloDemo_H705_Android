@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="*">
+
+            <TableRow>
+
+                <Button
+                    android:id="@+id/btn_notify_wechat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="notifyWechat"
+                    android:text="notifyWechat" />
+
+                <Button
+                    android:id="@+id/btn_notify_QQ"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="notifyQQ"
+                    android:text="notifyQQ" />
+            </TableRow>
+
+            <TableRow>
+
+                <Button
+                    android:id="@+id/btn_notify_whatsapp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="notifyWhatsapp"
+                    android:text="notifyWhatsapp" />
+
+                <Button
+                    android:id="@+id/btn_notify_facebook"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="notifyFacebook"
+                    android:text="notifyFacebook" />
+            </TableRow>
+
+            <TableRow>
+
+                <Button
+                    android:id="@+id/btn_notify_twitter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="notifyTwitter"
+                    android:text="notifyTwitter" />
+
+                <Button
+                    android:id="@+id/btn_notify_skype"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="notifySkype"
+                    android:text="notifySkype" />
+            </TableRow>
+
+            <TableRow>
+
+                <Button
+                    android:id="@+id/btn_notify_snapchat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="notifySnapchat"
+                    android:text="notifySnapchat" />
+
+                <Button
+                    android:id="@+id/btn_notify_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="notifyLine"
+                    android:text="notifyLine" />
+            </TableRow>
+        </TableLayout>
+    </ScrollView>
+
+</LinearLayout>

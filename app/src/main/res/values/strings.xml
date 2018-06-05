@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">FitpoloDemo</string>
+
+    <string name="confirm">confirm</string>
+    <string name="cancel">cancel</string>
+
+    <string name="permission_storage_close_title">Storage permission is not available</string>
+    <string name="permission_storage_close_content">Please find it in cellphone setting- permission, and allow FitpoloDemo use the storage permission</string>
+    <string name="permission_open">OK</string>
+    <string name="permission_storage_need_title">Please turn on storage permissions</string>
+    <string name="permission_storage_need_content">FitpoloDemo app need to record the data log and bracelet firmware update package , to feedback question and update firmware  If this permission is not on,  APP cannot be used normally.</string>
+    <string name="location_need_title">Turn on GPS service</string>
+    <string name="location_need_content">After that, APP could search and connect with the bracelet</string>
+    <string name="permission_location_close_title">GPS persission is not available</string>
+    <string name="permission_location_close_content">Please find it in cellphone setting- permission, and allow FitpoloDemo use the GPS permission</string>
+    <string name="permission_location_need_title">Turn on GPS permission</string>
+    <string name="permission_location_need_content">After that, APP could search and connect with the bracelet</string>
+</resources>

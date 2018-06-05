@@ -1,0 +1,44 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+    defaultConfig {
+        applicationId "com.fitpolo.demo"
+        minSdkVersion 18
+        targetSdkVersion 23
+        versionCode 1
+        versionName "3.0"
+    }
+
+    sourceSets {
+        lintOptions {
+            abortOnError false
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                //这里修改apk文件名
+                def fileName = "fitpoloDemo-${defaultConfig.versionName}.apk"
+                if (outputFile.name.contains('debug')) {
+                    fileName = "fitpoloDemo-${defaultConfig.versionName}-debug.apk"
+                }
+                output.outputFile = new File(outputFile.parent, fileName)
+            }
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.android.support:support-v4:23.4.0'
+    compile project(path: ':fitpolosupport')
+}
