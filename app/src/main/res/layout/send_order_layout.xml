@@ -236,6 +236,12 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:onClick="openStepChangeListener"
+                android:text="openStepChangeListener" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:onClick="getFirmwareParams"
                 android:text="getFirmwareParams" />
 

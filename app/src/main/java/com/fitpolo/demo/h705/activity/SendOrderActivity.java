@@ -39,6 +39,7 @@ import com.fitpolo.support.entity.OrderTaskResponse;
 import com.fitpolo.support.entity.SitAlert;
 import com.fitpolo.support.entity.UserInfo;
 import com.fitpolo.support.log.LogModule;
+import com.fitpolo.support.task.ZOpenStepListenerTask;
 import com.fitpolo.support.task.ZReadAlarmsTask;
 import com.fitpolo.support.task.ZReadAutoLightenTask;
 import com.fitpolo.support.task.ZReadBatteryTask;
@@ -230,6 +231,15 @@ public class SendOrderActivity extends BaseActivity {
                 if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
                     Toast.makeText(SendOrderActivity.this, "Success", Toast.LENGTH_SHORT).show();
                 }
+                if (MokoConstants.ACTION_CURRENT_DATA.equals(action)) {
+                    OrderEnum orderEnum = (OrderEnum) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_CURRENT_DATA_TYPE);
+                    switch (orderEnum) {
+                        case Z_STEPS_CHANGES_LISTENER:
+                            DailyStep dailyStep = MokoSupport.getInstance().getDailyStep();
+                            LogModule.i(dailyStep.toString());
+                            break;
+                    }
+                }
             }
         }
     };
@@ -253,6 +263,7 @@ public class SendOrderActivity extends BaseActivity {
             filter.addAction(MokoConstants.ACTION_ORDER_RESULT);
             filter.addAction(MokoConstants.ACTION_ORDER_TIMEOUT);
             filter.addAction(MokoConstants.ACTION_ORDER_FINISH);
+            filter.addAction(MokoConstants.ACTION_CURRENT_DATA);
             filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
             filter.setPriority(200);
             registerReceiver(mReceiver, filter);
@@ -349,7 +360,7 @@ public class SendOrderActivity extends BaseActivity {
     }
 
     public void setHeartRateInterval(View view) {
-        MokoSupport.getInstance().sendOrder(new ZWriteHeartRateIntervalTask(mService, 2));
+            MokoSupport.getInstance().sendOrder(new ZWriteHeartRateIntervalTask(mService, 2));
     }
 
     public void getHeartRateInterval(View view) {
@@ -407,6 +418,10 @@ public class SendOrderActivity extends BaseActivity {
     public void getLastestHeartRate(View view) {
         Calendar calendar = Utils.strDate2Calendar("2018-06-01 00:00", AppConstants.PATTERN_YYYY_MM_DD_HH_MM);
         MokoSupport.getInstance().sendOrder(new ZReadHeartRateTask(mService, calendar));
+    }
+
+    public void openStepChangeListener(View view) {
+        MokoSupport.getInstance().sendOrder(new ZOpenStepListenerTask(mService));
     }
 
     public void getFirmwareParams(View view) {

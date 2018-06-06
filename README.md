@@ -121,8 +121,10 @@
 1. OrderType
 
 		public enum OrderType implements Serializable {
-			NOTIFY("NOTIFY", "0000ffc2-0000-1000-8000-00805f9b34fb"),
-			WRITE("WRITE", "0000ffc1-0000-1000-8000-00805f9b34fb"),
+			READ_CHARACTER("READ_CHARACTER", "0000ffb0-0000-1000-8000-00805f9b34fb"),
+			WRITE_CHARACTER("WRITE_CHARACTER", "0000ffb1-0000-1000-8000-00805f9b34fb"),
+			STEP_CHARACTER("STEP_CHARACTER", "0000ffb2-0000-1000-8000-00805f9b34fb"),
+			HEART_RATE_CHARACTER("HEART_RATE_CHARACTER", "0000ffb3-0000-1000-8000-00805f9b34fb"),
 			;
 
 			private String uuid;
@@ -142,15 +144,20 @@
 			}
 		}
 
-	- 命令类型：每个命令都归属一种类型，目前H701只有通知和写两种，通知类型需要脸上设备后发送，打开设备的通知功能，其余命令可通过写类型发送给设备收到应答
+	- 命令类型：每个命令都归属一种类型，目前H703/H705有读、写、记步和心率（后两种支持实时数据变化通知），所有类型都需要连上设备后打开该特征的通知功能，才能收到应答
 
 2. OrderEnum
 
 		public enum OrderEnum implements Serializable {
-			getInnerVersion("获取内部版本", 0x09),
-			setSystemTime("设置手环时间", 0x11),
-			setUserInfo("设置用户信息", 0x12),
-			setBandAlarm("设置闹钟数据", 0x26),
+			READ_NOTIFY("打开读取通知", 0),
+			WRITE_NOTIFY("打开设置通知", 0),
+			STEP_NOTIFY("打开记步通知", 0),
+			HEART_RATE_NOTIFY("打开心率通知", 0),
+
+			Z_READ_ALARMS("读取闹钟", 0x01),
+			Z_READ_SIT_ALERT("读取久坐提醒", 0x04),
+			Z_READ_STEP_TARGET("读取记步目标", 0x06),
+			Z_READ_UNIT_TYPE("读取单位类型", 0x07),
 			...
 			private String orderName;
 			private int orderHeader;
@@ -201,20 +208,30 @@
 OrderTask的子类：
 
 	1.获取内部版本号
-		InnerVersionTask
+		ZReadVersionTask
 		返回结果后可获取手环信息，方法如下：
-		MokoSupport.showHeartRate;//是否支持同步心率;
-		MokoSupport.supportNewData;//是否支持同步最新的数据;
-		MokoSupport.supportNotifyAndRead;//是否支持读取数据和消息通知;
+		MokoSupport.versionCode;//获取固件版本
 		MokoSupport.firmwareEnum;//获取固件类型;
 		MokoSupport.canUpgrade;//是否可升级;
 	2.设置系统时间
-		SystemTimeTask
+		ZWriteSystemTimeTask
 	3.设置用户信息
-		UserInfoTask
+		ZWriteUserInfoTask
 		入参需传入用户信息UserInfo
-	4.设置闹钟数据
-		AllAlarmTask
+		public class UserInfo {
+			public int weight;// 体重
+			public int height;// 身高
+			public int age;// 年龄
+			public int birthdayMonth;// 出生月
+			public int birthdayDay;// 出生日
+			public int gender;// 性别 男：0；女：1
+			public int stepExtent;// 步幅
+		}
+	4.获取用户信息
+		ZReadUserInfoTask
+		MokoSupport.getInstance().getUserInfo();
+	5.设置闹钟数据
+		ZWriteAlarmsTask
 		入参需传入闹钟信息List<BandAlarm>
 		public class BandAlarm {
 		    public String time;// 时间，格式：HH:mm
@@ -231,192 +248,169 @@ OrderTask的子类：
 		    public String state;
 		    public int type;// 类型，0：吃药；1：喝水；3：普通；4：睡觉；5：吃药；6：锻炼
 		｝
-	5.设置单位制式
-		UnitTypeTask
+	6.获取闹钟数据
+		ZReadAlarmsTask
+		MokoSupport.getInstance().getAlarms();
+	7.设置单位制式
+		ZWriteUnitTypeTask
 		入参需传入单位制式
 		unitType// 0：中式；1：英式，默认中式
-	6.设置显示时间格式
-		TimeFormatTask
+	8.获取单位制式
+		ZReadUnitTypeTask
+		MokoSupport.getInstance().getUnitTypeBritish();
+	9.设置显示时间格式
+		ZWriteTimeFormatTask
 		入参需传入显示时间格式
 		timeFormat;// 0：24；1：12，默认24小时制
-	7.设置自动点亮屏幕
-		AutoLightenTask
-		入参需传入是否自动点亮屏幕
-		autoLighten;// 0：打开；1：关闭，默认打开
-	8.设置久坐提醒
-		SitLongTimeAlertTask
+	10.获取显示时间格式
+		ZReadTimeFormatTask
+		MokoSupport.getInstance().getTimeFormat();
+	11.设置自动点亮屏幕
+		ZWriteAutoLightenTask
+		入参需传入AutoLighten
+		public class AutoLighten {
+			public int autoLighten; // 翻腕亮屏开关，1：开；0：关；
+			public String startTime;// 开始时间，格式：HH:mm;
+			public String endTime;// 结束时间，格式：HH:mm;	8.设置久坐提醒
+		}
+	12.获取自动点亮屏幕
+		ZReadAutoLightenTask
+		MokoSupport.getInstance().getAutoLighten();
+	13.设置久坐提醒
+		ZWriteSitAlertTask
 		入参需传入久坐提醒信息SitAlert
 		public class SitAlert {
 		    public int alertSwitch; // 久坐提醒开关，1：开；0：关；
 		    public String startTime;// 开始时间，格式：HH:mm;
 		    public String endTime;// 结束时间，格式：HH:mm;
 		｝
-	9.设置上次显示
-		LastScreenTask
+	14.获取久坐提醒
+		ZReadSitAlertTask
+		MokoSupport.getInstance().getSitAlert();
+	15.设置上次显示
+		ZWriteLastScreenTask
 		入参需传入上次显示
 		lastScreen;// 1：打开；0：关闭
-	10.设置心率监测间隔
-		HeartRateIntervalTask
+	16.获取上次显示
+		ZReadLastScreenTask
+		MokoSupport.getInstance().getLastScreen();
+	17.设置心率监测间隔
+		ZWriteHeartRateIntervalTask
 		入参需传入心率监测间隔
 		heartRateInterval;// 0：关闭；1：10分钟；2：20分钟；3：30分钟
-	11.设置功能显示
-		FunctionDisplayTask
+	18.获取心率检测间隔
+		ZReadHeartRateIntervalTask
+		MokoSupport.getInstance().getHeartRateInterval();
+	19.设置功能显示
+		ZWriteCustomScreenTask
 		入参需传入功能显示
-		CustomScreen;
-	    // duration：是否显示运动时长；
-	    // calorie：是否显示运动消耗卡路里；
-	    // distance：是否显示运动运动距离；
-	    // heartrate：是否显示心率；
-	    // step：是否显示步数；
-	12.获取获取固件版本号
-		FirmwareVersionTask
-		返回结果后可查看手环固件版本
-		MokoSupport.versionCodeShow
-		示例：
-		MokoSupport.versionCodeShow = "2.1.32"
-	13.获取电量和记步总数
-		BatteryDailyStepsCountTask
-		返回结果后可查看手环电量
-		MokoSupport.getInstance().getBatteryQuantity()
-	14.获取睡眠和心率总数
-		SleepHeartCountTask
-	15.获取记步数据
-		AllStepsTask
-		返回结果后可查看手环中的全部记步数据
-		MokoSupport.getInstance().getDailySteps();
-		public class DailyStep {
-		    public String date;// 日期，yyyy-MM-dd
-		    public String count;// 步数
-		    public String duration;// 运动时间
-		    public String distance;// 运动距离
-		    public String calories;// 运动消耗卡路里
-			...
+		public class CustomScreen {
+			public boolean duration;//是否显示运动时长；
+			public boolean calorie;//是否显示运动消耗卡路里；
+			public boolean distance;//是否显示运动运动距离；
+			public boolean heartrate;//是否显示心率；
+			public boolean step;//是否显示步数；
+			public boolean sleep;//是否显示睡眠；
 		}
-		示例：
-		DailyStep{date='2017-06-05', count='1340', duration='5', distance='0.9', calories='78'}
-	16.获取睡眠数据
-		AllSleepIndexTask
-		返回结果后可查看手环中的全部睡眠数据
-		MokoSupport.getInstance().getDailySleeps()
-		public class DailySleep {
-		    public String date;// 日期，yyyy-MM-dd
-		    public String startTime;// 开始时间，yyyy-MM-dd HH:mm
-		    public String endTime;// 结束时间，yyyy-MM-dd HH:mm
-		    public String deepDuration;// 深睡时长，单位min
-		    public String lightDuration;// 浅睡时长，单位min
-		    public String awakeDuration;// 清醒时长，单位min
-		    public List<String> records;// 睡眠记录
-			...
+	20.获取功能显示
+		ZReadCustomScreenTask
+		MokoSupport.getInstance().getCustomScreen();
+	21.设置记步目标
+		ZWriteStepTargetTask
+		入参需传入目标值
+		stepTarget;//取值范围1~60000
+	22.获取记步目标
+		ZReadStepTargetTask
+		MokoSupport.getInstance().getStepTarget();
+	23.设置表盘样式
+		ZWriteDialTask
+		入参需传入表盘样式
+		dial;//取值范围1~3
+	24.获取表盘样式
+		ZReadDialTask
+		MokoSupport.getInstance().getDial();
+	25.设置勿扰
+		ZWriteNoDisturbTask
+		入参需传入勿扰信息
+		public class NoDisturb {
+			public int noDisturb; // 勿扰模式开关，1：开；0：关；
+			public String startTime;// 开始时间，格式：HH:mm;
+			public String endTime;// 结束时间，格式：HH:mm;
 		}
-		示例：
-		DailySleep{date='2017-06-05', startTime='2017-06-04 23:00', endTime='2017-06-05 07:00', deepDuration='360', lightDuration='60', awakeDuration='60' records=['01','01','10','10','00',...]}
-	17.获取心率
-		AllHeartRateTask
-		返回结果后可查看手环中的全部心率数据
-		MokoSupport.getInstance().getHeartRates();
-		public class HeartRate implements Comparable<HeartRate> {
-		    public String time;
-		    public String value;
-			...
-		}
-		示例：
-		HeartRate{time='2017-06-05 12:00', value='78'}
-	18.获取硬件参数
-		FirmwareParamTask
-		返回结果后可查看固件参数
-		MokoSupport.getInstance().getLastChargeTime();//最后充电时间
-		MokoSupport.getInstance().getProductBatch();//生产批号
-	19.获取未同步的记步数据
-		LastestStepsTask
+	26.读取勿扰
+		ZReadNoDisturbTask
+		MokoSupport.getInstance().getNodisturb();
+	27.获取未同步的记步数据
+		ZReadStepTask
 		入参需传入时间戳
 		lastSyncTime;// yyyy-MM-dd HH:mm
 		返回结果后可查看时间戳后的记步数据
 		MokoSupport.getInstance().getDailySteps()
-	20.获取未同步的睡眠记录数据
-		LastestSleepIndexTask
+	28.获取未同步的睡眠记录数据
+		ZReadSleepGeneralTask
 		入参需传入时间戳
 		lastSyncTime;// yyyy-MM-dd HH:mm
 		返回结果后可查看时间戳后的睡眠数据
 		MokoSupport.getInstance().getDailySleeps()
-	21.获取未同步的心率数据
-		LastestHeartRateTask
+	29.获取未同步的心率数据
+		ZReadHeartRateTask
 		入参需传入时间戳
 		lastSyncTime;// yyyy-MM-dd HH:mm
 		返回结果后可查看时间戳后的心率数据
 		MokoSupport.getInstance().getHeartRates()
-	22.设置手环震动
-		ShakeBandTask
+	30.打开记步变化通知
+		ZOpenStepListenerTask
+		打开后可通过广播接收器接收
+		if (MokoConstants.ACTION_CURRENT_DATA.equals(action)) {
+							OrderEnum orderEnum = (OrderEnum) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_CURRENT_DATA_TYPE);
+							switch (orderEnum) {
+								case Z_STEPS_CHANGES_LISTENER:
+									DailyStep dailyStep = MokoSupport.getInstance().getDailyStep();
+									LogModule.i(dailyStep.toString());
+									break;
+							}
+						}
+	31.获取硬件参数
+		ZReadParamsTask
+		返回结果后可查看固件参数
+		MokoSupport.getInstance().getProductBatch();//生产批号
+		MokoSupport.getInstance().getParams();//硬件参数
+		public class FirmwareParams {
+			public String test; // bit0:flash, bit1:G sensor,bit2: hr检测;
+			public int reflectiveThreshold;// 反光阈值,默认1380;
+			public int reflectiveValue;// 当前反光值;
+			public int batchYear;// 生产批次年;
+			public int batchWeek;// 生产批次周;
+			public int speedUnit;// 蓝牙连接配速单位是1.25ms;
+		}
+	32.获取电量
+		ZReadBatteryTask
+		返回结果后可查看手环电量
+		MokoSupport.getInstance().getBatteryQuantity();
+	33.获取最后充电时间
+		ZReadLastChargeTimeTask
+		MokoSupport.getInstance().getLastChargeTime();
+	34.设置手环震动
+		ZWriteShakeTask
 		默认震动2次，震动1秒停1秒
 		无应答处理
-	23.设置来电震动
-		PhoneComingShakeTask
-		入参需传入显示文案，是否是电话号码
-		String showText;// 显示文案（电话号码or联系人）
-    	boolean isPhoneNumber;// 是否是电话号码
-		无应答处理
-	24.设置短信震动
-		SmsComingShakeTask
-		入参需传入显示文案，是否是电话号码
-		String showText;// 显示文案（电话号码or联系人）
-    	boolean isPhoneNumber;// 是否是电话号码
-		无应答处理
-
-	以下功能只有固件版本是32及以上才能使用
-
-	25.读取闹钟数据
-		ReadAlarmsTask
-		MokoSupport.getInstance().getAlarms()
-	26.读取久坐提醒数据
-		ReadSitAlertTask
-		MokoSupport.getInstance().getSitAlert()
-	27.读取手环配置数据
-		ReadSettingTask
-		MokoSupport.getInstance().getUnitTypeBritish();//单位类型
-		MokoSupport.getInstance().getTimeFormat();//时间格式
-		MokoSupport.getInstance().getCustomScreen();//功能显示
-		MokoSupport.getInstance().getLastScreen();//是否开启最后显示
-		MokoSupport.getInstance().getHeartRateInterval();//心率间隔
-		MokoSupport.getInstance().getAutoLighten();//是否开启翻腕亮屏
-	28.微信通知
-		NotifyWechatTask
-		入参需传入显示文案
-		String showText;// 显示文案
-		无应答处理
-	29.QQ通知
-		NotifyQQTask
-		入参需传入显示文案
-		String showText;// 显示文案
-		无应答处理
-	30.WhatsApp通知
-		NotifyWhatsAppTask
-		入参需传入显示文案
-		String showText;// 显示文案
-		无应答处理
-	31.Facebook通知
-		NotifyFacebookTask
-		入参需传入显示文案
-		String showText;// 显示文案
-		无应答处理
-	32.Twitter通知
-		NotifyTwitterTask
-		入参需传入显示文案
-		String showText;// 显示文案
-		无应答处理
-	33.Skype通知
-		NotifySkypeTask
-		入参需传入显示文案
-		String showText;// 显示文案
-		无应答处理
-	34.Snapchat通知
-		NotifySnapchatTask
-		入参需传入显示文案
-		String showText;// 显示文案
-		无应答处理
-	35.Line通知
-		NotifyLineTask
-		入参需传入显示文案
-		String showText;// 显示文案
-		无应答处理
+	35.设置手环通知
+		ZWriteNotifyTask
+		public enum NotifyEnum {
+			PHONE_CALL(0X00),//来电通知
+			SMS(0X01),//短信通知
+			WECHAT(0X02),//微信通知
+			QQ(0X03),//QQ通知
+			WHATSAPP(0X04),//Whatsapp通知
+			FACEBOOK(0X05),//Facebook通知
+			TWITTER(0X06),//Twitter通知
+			SKYPE(0X07),//Skype通知
+			SNAPCHAT(0X08),//Snapchat通知
+			LINE(0X09),//Line通知
+			;
+		}
+		showText;//不超过14个字节
+		isOpen;//打开/关闭通知
 
 ### 2.5	sendDirectOrder
 
@@ -451,8 +445,8 @@ OrderTask的子类：
 - 可修改在SD卡上保存的文件名夹名和文件名
 
 		public class LogModule {
-			private static final String TAG = "fitpoloDemo";// 文件名
-		    private static final String LOG_FOLDER = "fitpoloDemo";// 文件夹名
+			private static final String TAG = "fitpoloDemoH705";// 文件名
+		    private static final String LOG_FOLDER = "fitpoloDemoH705";// 文件夹名
 			...
 		}
 
@@ -466,43 +460,41 @@ OrderTask的子类：
 
 ## 4.Upgrade
 
-- 升级功能封装在com.fitpolo.support.handler.UpgradeHandler类中，使用方法如下：
+- 升级功能基于DFU，使用方法如下：
 
+	- 注册/反注册监听器
 
-		UpgradeHandler upgradeHandler = new UpgradeHandler(this);
-		upgradeHandler.setFilePath(firmwarePath, deviceMacAddress,
-		new UpgradeHandler.IUpgradeCallback() {
-	        @Override
-	        public void onUpgradeError(int errorCode) {
-	            switch (errorCode) {
-	                case UpgradeHandler.EXCEPTION_FILEPATH_IS_NULL:
-	                    break;
-	                case UpgradeHandler.EXCEPTION_DEVICE_MAC_ADDRESS_IS_NULL:
-	                    break;
-	                case UpgradeHandler.EXCEPTION_UPGRADE_FAILURE:
-	                    break;
-	            }
-	        }
+			@Override
+			protected void onResume() {
+				super.onResume();
+				DfuServiceListenerHelper.registerProgressListener(this, mDfuProgressListener);
+			}
 
-	        @Override
-	        public void onProgress(int progress) {
+			@Override
+			protected void onPause() {
+				super.onPause();
+				DfuServiceListenerHelper.unregisterProgressListener(this, mDfuProgressListener);
+			}
 
-	        }
+	- 开启DFU，需传入设备Mac地址和设备名称，固件路径，创建DfuService
 
-	        @Override
-	        public void onUpgradeDone() {
+            final DfuServiceInitiator starter = new DfuServiceInitiator(mDevice.address)
+                    .setDeviceName(mDevice.name)
+                    .setKeepBond(false)
+                    .setDisableNotification(true);
+            starter.setZip(null, firmwarePath);
+            starter.start(this, DfuService.class);
 
-	        }
-	    });
+	- 监听升级状态
 
-- 调用时需要传入三个参数：
-	- firmwarePath：升级固件路径；
-	- deviceMacAddress：设备Mac地址（可从扫描到的设备中获得）；
-	- IUpgradeCallback：升级回调接口，实现接口中的方法，可获得升级失败，升级进度和升级成功回调；
+		onProgressChanged获取升级进度
+		onError获取失败原因
+		onDfuCompleted升级成功
 
 - 注意：
 	-	升级时不可对手环发送其他数据;
-	-	升级开始时，会先断开手环，4秒后自动连接手环，使手环进入传输数据的高速模式；
+	-	升级开始时，DFU会先自动断开手环，重连后开始升级;
 	-	升级失败或成功后会再次断开手环，需重新连接手环；
+
 
 

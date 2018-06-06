@@ -10,9 +10,6 @@ public class AppConstants {
 
     public static final String PATTERN_YYYY_MM_DD_HH_MM = "yyyy-MM-dd HH:mm";
 
-    // sp
-    public static final String SP_NAME = "sp_name_fitpolo";
-
     public static final String EXTRA_CONN_COUNT = "extra_conn_count";
 
     public static final int PERMISSION_REQUEST_CODE = 1;
