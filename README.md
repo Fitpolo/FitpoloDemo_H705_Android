@@ -1,17 +1,17 @@
 ## 1.Import and use SDK
-### 1.1	导入module工程fitpolosupport
-### 1.2	配置settings.gradle文件，引用fitpolosupport工程：
+### 1.1	import module project fitpolosupport
+### 1.2	settings.gradle document，quote fitpolosupport project：
 
 	include ':app',':fitpolosupport'
 
-### 1.3	编辑主工程的build.gradle文件：
+### 1.3	Edit the build.gradle file of the main project:
 
 	dependencies {
 	    compile fileTree(dir: 'libs', include: ['*.jar'])
 	    compile project(path: ':fitpolosupport')
 	}
 
-### 1.4	在工程初始化时导入sdk：
+### 1.4	Import sdk at project initialization
 
 	public class BaseApplication extends Application {
 	    @Override
@@ -25,31 +25,30 @@
 
 ## 2.Function Introduction
 
-- sdk中提供的方法包括：扫描设备、配对设备、发送队列命令（处理应答）、发送无队列命令（不处理应答）、打开关闭重连、获取蓝牙打开状态、获取设备连接状态、与设备断开连接等；
-- 由于扫描设备和接收命令时是异步线程处理，所以建议所有方法在`Service`里调用，可保证app在后台时也能正常接收数据；
-- 方法可通过`MokoSupport.getInstance()`调用；
+- The methods provided in sdk include: scanning device, pairing device, sending queue command (processing response), sending no queue command (no processing response), open, close, reconnection, obtaining Bluetooth open status, obtaining device connection status, disconnecting from device Connection, etc.
+- Since the scanning device and the receiving command are asynchronous thread processing, it is recommended that all methods be called in `Service` to ensure that the app can receive data normally in the background;
+- The method can be called with `MokoSupport.getInstance()`;
 
 ### 2.1	startScanDevice
 
-	@Description 扫描设备
+	@Description  scanning device
 	public void startScanDevice(final MokoScanDeviceCallback callback) {}
 
-回调函数`MokoScanDeviceCallback`：
+`MokoScanDeviceCallback`：call back 
 
-	@Description 扫描设备回调
+	@Description scan device call back
 	public interface ScanDeviceCallback {
-	    @Description 开始扫描
+	    @Description  start scan
 	    void onStartScan();
-	    @Description 扫描的设备
+	    @Description  scanned device
 	    void onScanDevice(BleDevice device);
-	    @Description 结束扫描
+	    @Description  end scan
 	    void onStopScan();
 	}
 
-- 在`onStartScan()`里做扫描前的准备工作；
+- Prepare for the scan in `onStartScan()`;
 
-- 在`onScanDevice(BleDevice device)`接收扫描到的设备，扫描到的设备包括MAC地址、名称、信号量和扫描记录；
-
+- Receive scanned devices on `onScanDevice(BleDevice device)`. Scanned devices include MAC address, name, semaphore, and scan history.
 		public class BleDevice implements Serializable, Comparable<BleDevice> {
 		    public String address;
 		    public String name;
@@ -58,58 +57,57 @@
 		    public byte[] scanRecord;
 			...
 		}
-	示例：
+	for example
 		BleDevice{address='DA:22:C3:C7:7D', name='FitpolpHR', rssi=-38, verifyCode='0C8D02', scanRecord=[2,1,6,7...]}
 
-- 在`onStopScan()`里做扫描后的处理工作；
+- Do the processing work after scanning in `onStopScan()`;
 
 ### 2.2	createBluetoothGatt
 
-	@Description 配对设备
+	@Description  pair device
 	public void connDevice(Context context, String address, MokoConnStateCallback mokoConnStateCallback) {}
 
-入参：
+Enter the parameters:
 
-1. 上下文；
+1. context
 
-2. 设备MAC地址；
+2. device MAC address
 
-3. 回调函数`MokoConnStateCallback`；
+3. `MokoConnStateCallback`；callback
 
 
-	@Description 前端展示连接回调
+	@Description  Front end display connection callback
 	public interface MokoConnStateCallback {
-	    @Description 连接成功
+	    @Description  connect successfully
 	    void onConnectSuccess();
-	    @Description 断开连接
+	    @Description  disconnect
 	    void onDisConnected();
-	    @Description 重连超时
+	    @Description  reconnect timeout
 	    void onConnTimeout(int reConnCount);
 	}
 
-- `onConnectSuccess()`表示连接成功；
+- `onConnectSuccess()` means connect successful
 
-- `onDisConnected()`表示连接失败；
+- `onDisConnected()` means connect failed
 
-- `onConnTimeout(int reConnCount)`表示连接失败，reConnCount重连次数；
+- `onConnTimeout(int reConnCount)`  means connect failed，reConnCount  reconnect times；
 
 ### 2.3	setOpenReConnect
 
-	@Description 设置重连
+	@Description   setreconnect
     public void setOpenReConnect(boolean openReConnect){}
 
-- `openReConnect`为true，则打开重连，当连接失败或连接断开后，系统会执行连接线程，若蓝牙关闭，则5秒执行一次重连。若重连失败，则继续重连；
-- `openReConnect`为false，则关闭重连
-
+`openReConnect` is true, then reconnect is opened. When the connection fails or the connection is disconnected, the system will execute the connection thread. If the Bluetooth is turned off, the reconnection will be performed in 5 seconds. If the reconnection fails, continue to reconnect;
+-  `openReConnect`is false，then turn it off and reconnect
 ### 2.4	sendOrder
 
-	@Description 发送命令
+	@Description   send order
 	public void sendOrder(OrderTask... orderTasks){}
 
-- 可发送单个命令；
-- 也可发送多个命令，命令按队列方式处理，先进先出；
+- could send singel order
+- Can also send multiple commands, the command is processed in a queue, first in, first out
 
-抽象类命令，包含命令枚举、命令应答回调、命令应答结果；
+Abstract class command, including command enumeration, command response callback, command response result;
 
 	public abstract class OrderTask {
 		public OrderType orderType;
@@ -144,20 +142,20 @@
 			}
 		}
 
-	- 命令类型：每个命令都归属一种类型，目前H703/H705有读、写、记步和心率（后两种支持实时数据变化通知），所有类型都需要连上设备后打开该特征的通知功能，才能收到应答
+	- Command type: Each command belongs to one type. At present, H703/H705 has read, write, step and heart rate (the latter two support real-time data change notification). All types need to be connected to the device to open the notification Function, then could receive a response
 
 2. OrderEnum
 
 		public enum OrderEnum implements Serializable {
-			READ_NOTIFY("打开读取通知", 0),
-			WRITE_NOTIFY("打开设置通知", 0),
-			STEP_NOTIFY("打开记步通知", 0),
-			HEART_RATE_NOTIFY("打开心率通知", 0),
+			READ_NOTIFY("turn on read notify", 0),
+			WRITE_NOTIFY("turn on write notify", 0) 
+			STEP_NOTIFY("turn on step counting notify", 0), 
+			HEART_RATE_NOTIFY("turn on heart rate notify", 0),
 
-			Z_READ_ALARMS("读取闹钟", 0x01),
-			Z_READ_SIT_ALERT("读取久坐提醒", 0x04),
-			Z_READ_STEP_TARGET("读取记步目标", 0x06),
-			Z_READ_UNIT_TYPE("读取单位类型", 0x07),
+			Z_READ_ALARMS("read alarm", 0x01), 
+			Z_READ_SIT_ALERT("read Sedentary reminder", 0x04),  
+			Z_READ_STEP_TARGET("read step target", 0x06),  
+			Z_READ_UNIT_TYPE("read unit type", 0x07), 
 			...
 			private String orderName;
 			private int orderHeader;
@@ -175,25 +173,24 @@
 				return orderName;
 			}
 		｝
-	- orderName:命令的名字；
-	- orderHeader:区分命令的头字段；
-	- 不同的命令对应不同的枚举类型，当执行多个命令时，可根据类型判断应答的是哪个命令；
+	- orderName: order name；
+	- orderHeader: Distinguish the header of the command: 
+	- 	Different commands correspond to different enumeration types. When multiple commands are executed,  command is answered according to the type;
 
 3. MokoOrderTaskCallback
 
 		public interface MokoOrderTaskCallback {
-			// 应答成功
+			//  response success
 		    void onOrderResult(OrderTaskResponse response);
-			// 应答超时
+			//  response timeout
 		    void onOrderTimeout(OrderTaskResponse response);
-			// 命令执行完成
+			//  order executed complete
 		    void onOrderFinish();
 		}
 
-	- onOrderResult(OrderTaskResponse response)应答成功，response中包含OrderEnum，可根据OrderEnum判断是哪个命令的结果；
-	- onOrderTimeout(OrderTaskResponse response)应答超时，response中包含OrderEnum，可根据OrderEnum判断是那个命令超时；
-	- onOrderFinish()命令执行完毕，当队列中没有命令时，则回调该方法；
-
+	- onOrderResult(OrderTaskResponse response) response success，response include OrderEnum，could judge which order's result according to order enum;
+	- onOrderTimeout(OrderTaskResponse response) response timeout，response include OrderEnum，could judge which order time out according to order enum;
+	- onOrderFinish() order finished executing, when no order in the queue, callback the method.
 4. OrderTaskResponse
 
 		public class OrderTaskResponse implements Serializable {
@@ -202,165 +199,165 @@
 			public byte[] responseValue;
 		}
 
-	- responseType:`RESPONSE_TYPE_NOTIFY`和`RESPONSE_TYPE_WRITE_NO_RESPONSE`l两种，区分命令类型；
-	- responseValue:应答返回的数据
+	- responseType:`RESPONSE_TYPE_NOTIFY`and`RESPONSE_TYPE_WRITE_NO_RESPONSE`two types，distinguish order type；
+	- responseValue: response reutuned value
 
-OrderTask的子类：
+OrderTask：
 
-	1.获取内部版本号
+	1.gain inner version No.
 		ZReadVersionTask
-		返回结果后可获取手环信息，方法如下：
-		MokoSupport.versionCode;//获取固件版本
-		MokoSupport.firmwareEnum;//获取固件类型;
-		MokoSupport.canUpgrade;//是否可升级;
-	2.设置系统时间
+		After returning the result, you can get the bracelet information as follows:
+		MokoSupport.versionCode;// gain firmware 
+		MokoSupport.firmwareEnum;// gain firmware type
+		MokoSupport.canUpgrade;// whether could upgrade
+	2.set system time
 		ZWriteSystemTimeTask
-	3.设置用户信息
+	3. set user information 
 		ZWriteUserInfoTask
-		入参需传入用户信息UserInfo
+		UserInfo Incoming users need to pass in user information
 		public class UserInfo {
-			public int weight;// 体重
-			public int height;// 身高
-			public int age;// 年龄
-			public int birthdayMonth;// 出生月
-			public int birthdayDay;// 出生日
-			public int gender;// 性别 男：0；女：1
-			public int stepExtent;// 步幅
+			public int weight;//  weight
+			public int height;//  height
+			public int age;//  age
+			public int birthdayMonth;//  birthday month
+			public int birthdayDay;//  birthday date
+			public int gender;// Gender Male: 0; Female: 1
+			public int stepExtent;//  step extent
 		}
-	4.获取用户信息
+	4. gain user information
 		ZReadUserInfoTask
 		MokoSupport.getInstance().getUserInfo();
-	5.设置闹钟数据
+	5. set alarm data
 		ZWriteAlarmsTask
-		入参需传入闹钟信息List<BandAlarm>
+		List<BandAlarm> Incoming access to the alarm information
 		public class BandAlarm {
-		    public String time;// 时间，格式：HH:mm
-		    // 状态
-		    // bit[7]：0：关闭；1：打开；
-		    // bit[6]：1：周日；
-		    // bit[5]：1：周六；
-		    // bit[4]：1：周五；
-		    // bit[3]：1：周四；
-		    // bit[2]：1：周三；
-		    // bit[1]：1：周二；
-		    // bit[0]：1：周一；
-		    // ex：每周日打开：11000000；每周一到周五打开10011111；
+		    public String time;// time，formate：HH:mm
+		    //  state
+		    // bit[7]：0：close；1：open；
+		    // bit[6]：1：sunday 
+		    // bit[5]：1：saturday
+		    // bit[4]：1：Friday
+		    // bit[3]：1：Thursday
+		    // bit[2]：1：Wednesday
+		    // bit[1]：1：Tuesday
+		    // bit[0]：1：Monday
+		    // ex： every Sunday turn on：11000000； every Monday to Friday to trun on: 10011111；
 		    public String state;
-		    public int type;// 类型，0：吃药；1：喝水；3：普通；4：睡觉；5：吃药；6：锻炼
+		    public int type;// type，0：take medicine；1：drink water；3：normaly；4：sleep ；5：take medicine；6： do sports
 		｝
-	6.获取闹钟数据
+	6. gain alarm datas
 		ZReadAlarmsTask
 		MokoSupport.getInstance().getAlarms();
-	7.设置单位制式
+	7. set unit 
 		ZWriteUnitTypeTask
-		入参需传入单位制式
-		unitType// 0：中式；1：英式，默认中式
-	8.获取单位制式
+		 Incoming entry unit system
+		unitType// 0： Chinese type；1：British type， Default Chinese type
+	8. gain unit type 
 		ZReadUnitTypeTask
 		MokoSupport.getInstance().getUnitTypeBritish();
-	9.设置显示时间格式
+	9. Set display time format
 		ZWriteTimeFormatTask
-		入参需传入显示时间格式
-		timeFormat;// 0：24；1：12，默认24小时制
-	10.获取显示时间格式
+		 Incoming entry should display time format
+		timeFormat;// 0：24；1：12， default 24-hour system
+	10. gain time display formate 
 		ZReadTimeFormatTask
 		MokoSupport.getInstance().getTimeFormat();
-	11.设置自动点亮屏幕
+	11. set light up the screen  by tap
 		ZWriteAutoLightenTask
-		入参需传入AutoLighten
+		incoming entry AutoLighten
 		public class AutoLighten {
-			public int autoLighten; // 翻腕亮屏开关，1：开；0：关；
-			public String startTime;// 开始时间，格式：HH:mm;
-			public String endTime;// 结束时间，格式：HH:mm;	8.设置久坐提醒
+			public int autoLighten; //  shake screen ，1： on；0： off；
+			public String startTime;//  start time， formate：HH:mm;
+			public String endTime;// end time，formate：HH:mm;	8. set Sedentary reminder
 		}
-	12.获取自动点亮屏幕
+	12. gain light up the screen by tap
 		ZReadAutoLightenTask
 		MokoSupport.getInstance().getAutoLighten();
-	13.设置久坐提醒
+	13. set sendentary reminder
 		ZWriteSitAlertTask
-		入参需传入久坐提醒信息SitAlert
+		 SitAlert  incoing entry sedentary reminder information
 		public class SitAlert {
-		    public int alertSwitch; // 久坐提醒开关，1：开；0：关；
-		    public String startTime;// 开始时间，格式：HH:mm;
-		    public String endTime;// 结束时间，格式：HH:mm;
+		    public int alertSwitch; //  advise to sport，1： on；0： off；
+		    public String startTime;//  start time， formate：HH:mm;
+		    public String endTime;//  end time， formate：HH:mm;
 		｝
-	14.获取久坐提醒
+	14. gain sedentary reminder information
 		ZReadSitAlertTask
 		MokoSupport.getInstance().getSitAlert();
-	15.设置上次显示
+	15. set last time display
 		ZWriteLastScreenTask
-		入参需传入上次显示
-		lastScreen;// 1：打开；0：关闭
-	16.获取上次显示
+		 Incoming parameters need pass last time display
+		lastScreen;// 1： on；0： off
+	16. gain last time display
 		ZReadLastScreenTask
 		MokoSupport.getInstance().getLastScreen();
-	17.设置心率监测间隔
+	17. set heart rate  meansure intervial
 		ZWriteHeartRateIntervalTask
-		入参需传入心率监测间隔
-		heartRateInterval;// 0：关闭；1：10分钟；2：20分钟；3：30分钟
-	18.获取心率检测间隔
+		 Incoming parameters need pass heart rate intervial
+		heartRateInterval;// 0： off；1： 10mins；2： 20mins；3： 30mins
+	18. gain heart rate measure intrvial
 		ZReadHeartRateIntervalTask
 		MokoSupport.getInstance().getHeartRateInterval();
-	19.设置功能显示
+	19. set functions display
 		ZWriteCustomScreenTask
-		入参需传入功能显示
+		 Incoming parameters need pass functions display
 		public class CustomScreen {
-			public boolean duration;//是否显示运动时长；
-			public boolean calorie;//是否显示运动消耗卡路里；
-			public boolean distance;//是否显示运动运动距离；
-			public boolean heartrate;//是否显示心率；
-			public boolean step;//是否显示步数；
-			public boolean sleep;//是否显示睡眠；
+			public boolean duration;//whether display sports time
+			public boolean calorie;//whether display calories burnt
+			public boolean distance;//whether display sports distance
+			public boolean heartrate;//whether display heart rate
+			public boolean step;//whether display steps
+			public boolean sleep;//whether display sleep
 		}
-	20.获取功能显示
+	20. gain functions display
 		ZReadCustomScreenTask
 		MokoSupport.getInstance().getCustomScreen();
-	21.设置记步目标
+	21. set target steps
 		ZWriteStepTargetTask
-		入参需传入目标值
-		stepTarget;//取值范围1~60000
-	22.获取记步目标
+		 incoming parameter need pass target steps
+		stepTarget;// value range 1~60000
+	22. gain target step
 		ZReadStepTargetTask
 		MokoSupport.getInstance().getStepTarget();
-	23.设置表盘样式
+	23. set watch face
 		ZWriteDialTask
-		入参需传入表盘样式
-		dial;//取值范围1~3
-	24.获取表盘样式
+		 incoming parameter need pass watch face
+		dial;// value range 1~3
+	24. gain watch face setting
 		ZReadDialTask
 		MokoSupport.getInstance().getDial();
-	25.设置勿扰
+	25. set do not disturb
 		ZWriteNoDisturbTask
-		入参需传入勿扰信息
+		 incoming parameter need pass do not disturb
 		public class NoDisturb {
-			public int noDisturb; // 勿扰模式开关，1：开；0：关；
-			public String startTime;// 开始时间，格式：HH:mm;
-			public String endTime;// 结束时间，格式：HH:mm;
+			public int noDisturb; //  do not disturb，1： on；0： off；
+			public String startTime;//  start time， formate：HH:mm;
+			public String endTime;//  end time， formate：HH:mm;
 		}
-	26.读取勿扰
+	26. Read not disturb
 		ZReadNoDisturbTask
 		MokoSupport.getInstance().getNodisturb();
-	27.获取未同步的记步数据
+	27. Get unsynchronized step data
 		ZReadStepTask
-		入参需传入时间戳
+		 incoming parameter need timestamp
 		lastSyncTime;// yyyy-MM-dd HH:mm
-		返回结果后可查看时间戳后的记步数据
+		 After returning the result, you can view the step data after the timestamp.
 		MokoSupport.getInstance().getDailySteps()
-	28.获取未同步的睡眠记录数据
+	28. Get unsynchronized sleep record data
 		ZReadSleepGeneralTask
-		入参需传入时间戳
+		 incoming parameter need timestamp
 		lastSyncTime;// yyyy-MM-dd HH:mm
-		返回结果后可查看时间戳后的睡眠数据
+		 After returning the result, you can view the sleep data after the timestamp.
 		MokoSupport.getInstance().getDailySleeps()
-	29.获取未同步的心率数据
+	29. get unsymchronized heart rate datas
 		ZReadHeartRateTask
-		入参需传入时间戳
+		 incoming parameter need timestamp
 		lastSyncTime;// yyyy-MM-dd HH:mm
-		返回结果后可查看时间戳后的心率数据
+		 After returning the result, you can view the heart rate after the timestamp.
 		MokoSupport.getInstance().getHeartRates()
-	30.打开记步变化通知
+	30. turn steps change notification
 		ZOpenStepListenerTask
-		打开后可通过广播接收器接收
+		 Can be received by the broadcast receiver when turned on
 		if (MokoConstants.ACTION_CURRENT_DATA.equals(action)) {
 							OrderEnum orderEnum = (OrderEnum) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_CURRENT_DATA_TYPE);
 							switch (orderEnum) {
@@ -370,88 +367,88 @@ OrderTask的子类：
 									break;
 							}
 						}
-	31.获取硬件参数
+	31. gain Hardware parameter
 		ZReadParamsTask
-		返回结果后可查看固件参数
-		MokoSupport.getInstance().getProductBatch();//生产批号
-		MokoSupport.getInstance().getParams();//硬件参数
+		 Check the firmware parameters after returning the result
+		MokoSupport.getInstance().getProductBatch();// produce batch
+		MokoSupport.getInstance().getParams();// hardware parameter
 		public class FirmwareParams {
-			public String test; // bit0:flash, bit1:G sensor,bit2: hr检测;
-			public int reflectiveThreshold;// 反光阈值,默认1380;
-			public int reflectiveValue;// 当前反光值;
-			public int batchYear;// 生产批次年;
-			public int batchWeek;// 生产批次周;
-			public int speedUnit;// 蓝牙连接配速单位是1.25ms;
+			public String test; // bit0:flash, bit1:G sensor,bit2: hr  measure;
+			public int reflectiveThreshold;// Reflective threshold, default1380;
+			public int reflectiveValue;// present reflective threshold
+			public int batchYear;//  produce batch year
+			public int batchWeek;//  produce batch week
+			public int speedUnit;// Bluetooth connection speed unit is 1.25ms
 		}
-	32.获取电量
+	32. gain battery power
 		ZReadBatteryTask
-		返回结果后可查看手环电量
+		 check battery power after returning the result
 		MokoSupport.getInstance().getBatteryQuantity();
-	33.获取最后充电时间
+	33. gain last time charge time
 		ZReadLastChargeTimeTask
 		MokoSupport.getInstance().getLastChargeTime();
-	34.设置手环震动
+	34. set bracelet vibrate
 		ZWriteShakeTask
-		默认震动2次，震动1秒停1秒
-		无应答处理
-	35.设置手环通知
+		default vibrate twice, vibrate 1 second then stop 1 second
+		 no response handle
+	35. set bracelet notification
 		ZWriteNotifyTask
 		public enum NotifyEnum {
-			PHONE_CALL(0X00),//来电通知
-			SMS(0X01),//短信通知
-			WECHAT(0X02),//微信通知
-			QQ(0X03),//QQ通知
-			WHATSAPP(0X04),//Whatsapp通知
-			FACEBOOK(0X05),//Facebook通知
-			TWITTER(0X06),//Twitter通知
-			SKYPE(0X07),//Skype通知
-			SNAPCHAT(0X08),//Snapchat通知
-			LINE(0X09),//Line通知
+			PHONE_CALL(0X00),// call notification
+			SMS(0X01),// SMS notification
+			WECHAT(0X02),// wechat notification
+			QQ(0X03),// qq notification
+			WHATSAPP(0X04),//Whatsapp  notification
+			FACEBOOK(0X05),//Facebook  notification
+			TWITTER(0X06),//Twitter  notification
+			SKYPE(0X07),//Skype  notification
+			SNAPCHAT(0X08),//Snapchat  notification
+			LINE(0X09),//Line  notification
 			;
 		}
-		showText;//不超过14个字节
-		isOpen;//打开/关闭通知
+		showText;// no more than 14 bytes
+		isOpen;// on/off notification
 
 ### 2.5	sendDirectOrder
 
-直接发送命令，当命令无需应答时可用该方法，只支持单个命令的发送
+Send commands directly, this method can be used when the command does not need to answer, only supports the sending of a single command.
 
 	public void sendDirectOrder(OrderTask orderTask){}
 
 ### 2.6	isBluetoothOpen
 
-判断蓝牙是否打开
+Judge if Bluetooth is turned on
 
 	public boolean isBluetoothOpen(){}
 
 ### 2.7	isConnDevice
 
-判断手环是否连接
+judge if the bracelet is connected with app
 
 	public boolean isConnDevice(Context context, String address){}
 
-入参：address	手环MAC地址
+ incominf parameter：address	bracelet mac address
 
 ### 2.8	disConnectBle
 
-与手环断开连接
+disconnect the bracelet
 
 	public void disConnectBle(){}
 
 ## 3.Save Log to SD Card
 
-- SDK中集成了Log保存到SD卡的功能，引用的是[https://github.com/elvishew/xLog](https://github.com/elvishew/xLog "XLog")
-- 初始化方法在`MokoSupport.getInstance().init(getApplicationContext())`中实现
-- 可修改在SD卡上保存的文件名夹名和文件名
+- The SDK integrates the function of saving the log to the SD card.  reference from:[https://github.com/elvishew/xLog](https://github.com/elvishew/xLog "XLog")
+-  Initialization method could be available from `MokoSupport.getInstance().init(getApplicationContext())`
+- The file name folder name and file name saved on the SD card can be modified.
 
 		public class LogModule {
-			private static final String TAG = "fitpoloDemoH705";// 文件名
-		    private static final String LOG_FOLDER = "fitpoloDemoH705";// 文件夹名
+			private static final String TAG = "fitpoloDemoH705";//  file name
+		    private static final String LOG_FOLDER = "fitpoloDemoH705";//  file folder name
 			...
 		}
 
-- 存储策略：仅保存当天数据和前一天数据，前一天数据以.bak为后缀
-- 调用方式：
+- Storage policy: only save the current day data and the previous day data, the previous day data is suffixed with .bak
+- Call method：
 	- LogModule.v("log info");
 	- LogModule.d("log info");
 	- LogModule.i("log info");
@@ -460,9 +457,9 @@ OrderTask的子类：
 
 ## 4.Upgrade
 
-- 升级功能基于DFU，使用方法如下：
+- The upgrade function is based on DFU and is used as follows:
 
-	- 注册/反注册监听器
+	- Register/anti-register listener
 
 			@Override
 			protected void onResume() {
@@ -476,7 +473,7 @@ OrderTask的子类：
 				DfuServiceListenerHelper.unregisterProgressListener(this, mDfuProgressListener);
 			}
 
-	- 开启DFU，需传入设备Mac地址和设备名称，固件路径，创建DfuService
+	- Turn on DFU, you need to pass the device Mac address and device name, firmware path, create DfuService
 
             final DfuServiceInitiator starter = new DfuServiceInitiator(mDevice.address)
                     .setDeviceName(mDevice.name)
@@ -485,16 +482,17 @@ OrderTask的子类：
             starter.setZip(null, firmwarePath);
             starter.start(this, DfuService.class);
 
-	- 监听升级状态
+	-  Monitor upgrade status
 
-		onProgressChanged获取升级进度
-		onError获取失败原因
-		onDfuCompleted升级成功
+		onProgressChanged  gain upgrade progess
+		onError  gain fail reason
+		onDfuCompleted  upgrade succeed
 
-- 注意：
-	-	升级时不可对手环发送其他数据;
-	-	升级开始时，DFU会先自动断开手环，重连后开始升级;
-	-	升级失败或成功后会再次断开手环，需重新连接手环；
+- note：
+	-	can not send datas to the bracelet  during the upgrade;
+	-	When the upgrade starts, DFU will automatically disconnect the bracelet first, and then restart after the reconnection;
+	-	After the upgrade fails or succeeds, the bracelet will be disconnected again, and the bracelet needs to be reconnected;
+
 
 
 
