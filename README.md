@@ -7,8 +7,8 @@
 ### 1.3	Edit the build.gradle file of the main project:
 
 	dependencies {
-	    compile fileTree(dir: 'libs', include: ['*.jar'])
-	    compile project(path: ':fitpolosupport')
+	    implementation fileTree(dir: 'libs', include: ['*.jar'])
+	    implementation project(path: ':fitpolosupport')
 	}
 
 ### 1.4	Import sdk at project initialization

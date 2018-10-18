@@ -1,44 +1,56 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.fitpolo.demo.h705"
         minSdkVersion 18
-        targetSdkVersion 23
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-    }
 
-    sourceSets {
-        lintOptions {
-            abortOnError false
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath = true
+            }
         }
     }
+
     buildTypes {
         release {
             minifyEnabled false
         }
     }
     applicationVariants.all { variant ->
-        variant.outputs.each { output ->
+        variant.outputs.all { output ->
             def outputFile = output.outputFile
             if (outputFile != null && outputFile.name.endsWith('.apk')) {
-                //这里修改apk文件名
-                def fileName = "fitpoloDemoH705-${defaultConfig.versionName}.apk"
+                def formatedDate = new Date().format("yyyyMMddHHmm")
+                def apkFileName = "FitpoloDemoH705_${defaultConfig.versionName}_${formatedDate}.apk"
                 if (outputFile.name.contains('debug')) {
-                    fileName = "fitpoloDemoH705-${defaultConfig.versionName}-debug.apk"
+                    apkFileName = "FitpoloDemoH705__${defaultConfig.versionName}_${formatedDate}_debug.apk"
                 }
-                output.outputFile = new File(outputFile.parent, fileName)
+                outputFileName = apkFileName
+            }
+        }
+    }
+}
+
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        def requested = details.requested
+        if (requested.group == 'com.android.support') {
+            if (!requested.name.startsWith("multidex")) {
+                details.useVersion '28.0.0'
             }
         }
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.jakewharton:butterknife:7.0.1'
-    compile 'com.android.support:support-v4:23.4.0'
-    compile project(path: ':fitpolosupport')
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.jakewharton:butterknife:7.0.1'
+    implementation 'com.android.support:support-v4:23.4.0'
+    implementation project(path: ':fitpolosupport')
 }
