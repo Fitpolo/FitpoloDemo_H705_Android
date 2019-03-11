@@ -8,7 +8,7 @@ android {
         minSdkVersion 18
         targetSdkVersion 28
         versionCode 1
-        versionName "1.0"
+        versionName "2.0"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -49,8 +49,8 @@ configurations.all {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.jakewharton:butterknife:7.0.1'
-    implementation 'com.android.support:support-v4:23.4.0'
+    implementation 'com.android.support:support-v4:28.0.0'
     implementation project(path: ':fitpolosupport')
 }

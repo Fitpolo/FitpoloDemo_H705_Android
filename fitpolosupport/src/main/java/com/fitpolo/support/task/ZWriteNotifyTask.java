@@ -1,5 +1,8 @@
 package com.fitpolo.support.task;
 
+
+import android.support.annotation.NonNull;
+
 import com.fitpolo.support.MokoConstants;
 import com.fitpolo.support.MokoSupport;
 import com.fitpolo.support.callback.MokoOrderTaskCallback;
@@ -19,9 +22,9 @@ public class ZWriteNotifyTask extends OrderTask {
 
     private byte[] orderData;
 
-    public ZWriteNotifyTask(MokoOrderTaskCallback callback, NotifyEnum notifyEnum, String showText, boolean isOpen) {
+    public ZWriteNotifyTask(MokoOrderTaskCallback callback, NotifyEnum notifyEnum, @NonNull String showText, boolean isOpen) {
         super(OrderType.WRITE_CHARACTER, OrderEnum.Z_WRITE_NOTIFY, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
-        int showTextLength = showText.length();
+        int showTextLength = showText == null ? 0 : showText.length();
         byte[] showTextBytes = new byte[0];
         if (showTextLength > 0) {
             if (showTextLength > 14) {

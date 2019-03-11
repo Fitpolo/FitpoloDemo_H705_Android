@@ -10,6 +10,7 @@ public class OpenNotifyTask extends OrderTask {
 
     public OpenNotifyTask(OrderType orderType, OrderEnum orderEnum, MokoOrderTaskCallback callback) {
         super(orderType, orderEnum, callback, OrderTask.RESPONSE_TYPE_NOTIFY);
+        data = new byte[0];
     }
 
     @Override
