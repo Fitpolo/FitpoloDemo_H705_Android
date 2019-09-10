@@ -8,7 +8,7 @@ android {
         minSdkVersion 18
         targetSdkVersion 28
         versionCode 1
-        versionName "2.0"
+        versionName "3.0"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -29,7 +29,7 @@ android {
                 def formatedDate = new Date().format("yyyyMMddHHmm")
                 def apkFileName = "FitpoloDemoH705_${defaultConfig.versionName}_${formatedDate}.apk"
                 if (outputFile.name.contains('debug')) {
-                    apkFileName = "FitpoloDemoH705__${defaultConfig.versionName}_${formatedDate}_debug.apk"
+                    apkFileName = "FitpoloDemoH705_${defaultConfig.versionName}_${formatedDate}_debug.apk"
                 }
                 outputFileName = apkFileName
             }

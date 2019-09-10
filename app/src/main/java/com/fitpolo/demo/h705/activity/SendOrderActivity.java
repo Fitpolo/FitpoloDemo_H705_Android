@@ -39,6 +39,7 @@ import com.fitpolo.support.entity.OrderTaskResponse;
 import com.fitpolo.support.entity.SitAlert;
 import com.fitpolo.support.entity.UserInfo;
 import com.fitpolo.support.log.LogModule;
+import com.fitpolo.support.task.ResetBandTask;
 import com.fitpolo.support.task.ZOpenStepListenerTask;
 import com.fitpolo.support.task.ZReadAlarmsTask;
 import com.fitpolo.support.task.ZReadAutoLightenTask;
@@ -61,6 +62,7 @@ import com.fitpolo.support.task.ZReadUserInfoTask;
 import com.fitpolo.support.task.ZReadVersionTask;
 import com.fitpolo.support.task.ZWriteAlarmsTask;
 import com.fitpolo.support.task.ZWriteAutoLightenTask;
+import com.fitpolo.support.task.ZWriteCloseTask;
 import com.fitpolo.support.task.ZWriteCustomScreenTask;
 import com.fitpolo.support.task.ZWriteDialTask;
 import com.fitpolo.support.task.ZWriteHeartRateIntervalTask;
@@ -607,5 +609,13 @@ public class SendOrderActivity extends BaseActivity {
         if (!isFinishing() && mDFUDialog != null && mDFUDialog.isShowing()) {
             mDFUDialog.dismiss();
         }
+    }
+
+    public void reset(View view) {
+        MokoSupport.getInstance().sendOrder(new ResetBandTask(mService));
+    }
+
+    public void close(View view) {
+        MokoSupport.getInstance().sendOrder(new ZWriteCloseTask(mService));
     }
 }

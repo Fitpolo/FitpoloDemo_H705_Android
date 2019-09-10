@@ -482,7 +482,8 @@ public class MokoSupport implements MokoResponseCallback {
                 case HANDLER_MESSAGE_WHAT_SERVICES_DISCOVERED:
                     LogModule.i("连接成功！");
                     mCharacteristicMap = MokoCharacteristicHandler.getInstance().getCharacteristics(mBluetoothGatt);
-                    sendOrder(new OpenNotifyTask(OrderType.READ_CHARACTER, OrderEnum.READ_NOTIFY, null),
+                    sendOrder(new OpenNotifyTask(OrderType.NOTIFY, OrderEnum.openNotify, null),
+                            new OpenNotifyTask(OrderType.READ_CHARACTER, OrderEnum.READ_NOTIFY, null),
                             new OpenNotifyTask(OrderType.WRITE_CHARACTER, OrderEnum.WRITE_NOTIFY, null),
                             new OpenNotifyTask(OrderType.STEP_CHARACTER, OrderEnum.STEP_NOTIFY, null),
                             new OpenNotifyTask(OrderType.HEART_RATE_CHARACTER, OrderEnum.HEART_RATE_NOTIFY, null));

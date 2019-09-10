@@ -14,6 +14,8 @@ public enum OrderEnum implements Serializable {
     STEP_NOTIFY("打开记步通知", 0),
     HEART_RATE_NOTIFY("打开心率通知", 0),
 
+    openNotify("打开设备通知", 0),
+
     Z_READ_ALARMS("读取闹钟", 0x01),
     Z_READ_SIT_ALERT("读取久坐提醒", 0x04),
     Z_READ_STEP_TARGET("读取记步目标", 0x06),
@@ -53,6 +55,9 @@ public enum OrderEnum implements Serializable {
     Z_STEPS_CHANGES_LISTENER("监听记步", 0x03),
     Z_READ_HEART_RATE("读取心率", 0x01),
     Z_MEASURE_HEART_RATE("测量心率", 0x03),
+
+    RESET_DATA("恢复出厂设置", 0x0A),
+    Z_WRITE_CLOSE("关机", 0x12),
     ;
 
 

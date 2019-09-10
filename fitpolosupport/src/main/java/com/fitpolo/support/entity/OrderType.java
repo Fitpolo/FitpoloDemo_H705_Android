@@ -3,6 +3,8 @@ package com.fitpolo.support.entity;
 import java.io.Serializable;
 
 public enum OrderType implements Serializable {
+    NOTIFY("NOTIFY", "0000ffc2-0000-1000-8000-00805f9b34fb"),
+    WRITE("WRITE", "0000ffc1-0000-1000-8000-00805f9b34fb"),
     READ_CHARACTER("READ_CHARACTER", "0000ffb0-0000-1000-8000-00805f9b34fb"),
     WRITE_CHARACTER("WRITE_CHARACTER", "0000ffb1-0000-1000-8000-00805f9b34fb"),
     STEP_CHARACTER("STEP_CHARACTER", "0000ffb2-0000-1000-8000-00805f9b34fb"),

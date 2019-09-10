@@ -292,6 +292,22 @@
                     android:text="notification" />
             </TableRow>
 
+            <TableRow>
+
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="reset"
+                    android:text="reset" />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="close"
+                    android:text="close" />
+            </TableRow>
+
         </TableLayout>
     </ScrollView>
 
